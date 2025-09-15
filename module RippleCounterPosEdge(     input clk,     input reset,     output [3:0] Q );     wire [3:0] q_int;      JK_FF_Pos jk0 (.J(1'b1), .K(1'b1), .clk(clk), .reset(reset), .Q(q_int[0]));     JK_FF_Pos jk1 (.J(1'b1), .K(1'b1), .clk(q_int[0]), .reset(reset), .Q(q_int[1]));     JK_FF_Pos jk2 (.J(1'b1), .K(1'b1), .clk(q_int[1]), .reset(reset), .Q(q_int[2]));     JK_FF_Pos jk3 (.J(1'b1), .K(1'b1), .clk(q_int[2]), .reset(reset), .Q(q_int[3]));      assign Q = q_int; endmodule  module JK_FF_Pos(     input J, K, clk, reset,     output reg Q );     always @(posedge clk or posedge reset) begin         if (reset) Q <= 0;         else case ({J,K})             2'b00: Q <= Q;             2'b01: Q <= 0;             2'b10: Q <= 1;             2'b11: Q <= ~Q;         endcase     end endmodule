@@ -1,0 +1,29 @@
+module RippleCounterPosEdge(
+    input clk,
+    input reset,
+    output [3:0] Q
+);
+    wire [3:0] q_int;
+
+    JK_FF_Pos jk0 (.J(1'b1), .K(1'b1), .clk(clk), .reset(reset), .Q(q_int[0]));
+    JK_FF_Pos jk1 (.J(1'b1), .K(1'b1), .clk(q_int[0]), .reset(reset), .Q(q_int[1]));
+    JK_FF_Pos jk2 (.J(1'b1), .K(1'b1), .clk(q_int[1]), .reset(reset), .Q(q_int[2]));
+    JK_FF_Pos jk3 (.J(1'b1), .K(1'b1), .clk(q_int[2]), .reset(reset), .Q(q_int[3]));
+
+    assign Q = q_int;
+endmodule
+
+module JK_FF_Pos(
+    input J, K, clk, reset,
+    output reg Q
+);
+    always @(posedge clk or posedge reset) begin
+        if (reset) Q <= 0;
+        else case ({J,K})
+            2'b00: Q <= Q;
+            2'b01: Q <= 0;
+            2'b10: Q <= 1;
+            2'b11: Q <= ~Q;
+        endcase
+    end
+endmodule
