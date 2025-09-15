@@ -1,0 +1,12 @@
+module Lucky7or11(
+    input clk, reset,
+    output win
+);
+    wire [3:0] count;
+
+    // 4-bit counter using JK FFs
+    RippleCounterNegEdge counter (.clk(clk), .reset(reset), .Q(count));
+
+    // Detect 7 (0111) or 11 (1011)
+    assign win = (count == 4'b0111) | (count == 4'b1011);
+endmodule
