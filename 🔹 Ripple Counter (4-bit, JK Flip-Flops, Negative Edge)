@@ -1,0 +1,34 @@
+module RippleCounterNegEdge(
+    input clk,
+    input reset,
+    output [3:0] Q
+);
+    wire [3:0] q_int;
+
+    // First JK Flip-Flop
+    JK_FF jk0 (.J(1'b1), .K(1'b1), .clk(clk), .reset(reset), .Q(q_int[0]));
+
+    // Ripple chain
+    JK_FF jk1 (.J(1'b1), .K(1'b1), .clk(q_int[0]), .reset(reset), .Q(q_int[1]));
+    JK_FF jk2 (.J(1'b1), .K(1'b1), .clk(q_int[1]), .reset(reset), .Q(q_int[2]));
+    JK_FF jk3 (.J(1'b1), .K(1'b1), .clk(q_int[2]), .reset(reset), .Q(q_int[3]));
+
+    assign Q = q_int;
+endmodule
+
+
+// JK Flip-Flop (negative edge triggered)
+module JK_FF(
+    input J, K, clk, reset,
+    output reg Q
+);
+    always @(negedge clk or posedge reset) begin
+        if (reset) Q <= 0;
+        else case ({J,K})
+            2'b00: Q <= Q;       // hold
+            2'b01: Q <= 0;       // reset
+            2'b10: Q <= 1;       // set
+            2'b11: Q <= ~Q;      // toggle
+        endcase
+    end
+endmodule
