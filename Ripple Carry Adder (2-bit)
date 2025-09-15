@@ -1,0 +1,21 @@
+// Full Adder
+module fulladder(
+    input A, B, Cin,
+    output Sum, Cout
+);
+    assign Sum = A ^ B ^ Cin;
+    assign Cout = (A & B) | (Cin & (A ^ B));
+endmodule
+
+// 2-bit Ripple Carry Adder
+module adder(
+    input [1:0] A, B,
+    input Cin,
+    output [1:0] Sum,
+    output Cout
+);
+    wire c1;
+
+    fulladder fa0 (.A(A[0]), .B(B[0]), .Cin(Cin), .Sum(Sum[0]), .Cout(c1));
+    fulladder fa1 (.A(A[1]), .B(B[1]), .Cin(c1), .Sum(Sum[1]), .Cout(Cout));
+endmodule
